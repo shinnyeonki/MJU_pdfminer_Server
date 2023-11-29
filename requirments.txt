@@ -5,6 +5,7 @@ click==8.1.7
 cryptography==41.0.5
 fire==0.5.0
 Flask==3.0.0
+Flask-Cors==4.0.0
 fonttools==4.45.1
 itsdangerous==2.1.2
 Jinja2==3.1.2
@@ -14,7 +15,7 @@ numpy==1.26.2
 opencv-python==4.8.1.78
 pdf2docx==0.5.6
 pdfminer.six==20221105
-pip==22.0.2
+pip==23.3.1
 pycparser==2.21
 PyMuPDF==1.23.6
 PyMuPDFb==1.23.6

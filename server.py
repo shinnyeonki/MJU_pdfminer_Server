@@ -1,23 +1,24 @@
-from flask import Flask, request, send_file
-from werkzeug.utils import secure_filename
 from pdf2docx import Converter
-import os
+from flask import Flask, request, send_file
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
+# pdf  -> docx 변환 기능
 @app.route('/pdfminer/get_doc', methods=['POST'])
 def get_doc():
     file = request.files['file']
-    filename = secure_filename(file.filename)
+    filename = file.filename
     file.save(filename)
-
 
     result_filename = filename.replace('.pdf', '.docx')
     cv = Converter(filename)
     cv.convert(result_filename)
     cv.close()
-    return send_file(result_filename, as_attachment=True) #전송부분이 잘되는지 확인해야함!!
+    return send_file(result_filename, as_attachment=True)
 
+# pdf -> txt 변환 기능 추후 개발 예정
 # @app.route('/pdfminer/get_txt', methods=['POST'])
 # def run_python_program():
 #     file = request.files['file']
@@ -33,3 +34,4 @@ def get_doc():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
+#    app.run(host='localhost', port=5000)

@@ -23,7 +23,7 @@ def get_doc():
 @app.route('/pdfminer/get_txt', methods=['POST'])
 def get_txt():
     file = request.files['file']
-    filename = secure_filename(file.filename)
+    filename = file.filename
     file.save(filename)
 
     # PDF 파일에서 텍스트 추출
@@ -36,6 +36,10 @@ def get_txt():
 
     return send_file(result_filename, as_attachment=True)
 
+@app.route('/pdfminer/get_txt', methods=['POST'])
+def get_html():
+    pass
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

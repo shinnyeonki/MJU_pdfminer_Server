@@ -1,6 +1,7 @@
 from pdf2docx import Converter
 from flask import Flask, request, send_file
 from flask_cors import CORS
+from pdfminer.high_level import extract_text
 
 app = Flask(__name__)
 CORS(app)
@@ -18,18 +19,22 @@ def get_doc():
     cv.close()
     return send_file(result_filename, as_attachment=True)
 
-# pdf -> txt 변환 기능 추후 개발 예정
-# @app.route('/pdfminer/get_txt', methods=['POST'])
-# def run_python_program():
-#     file = request.files['file']
-#     filename = secure_filename(file.filename)
-#     file.save(filename)
 
-#     # 여기에서 filename 파일을 사용하여 Python 프로그램을 실행하고,
-#     # 결과 파일을 생성합니다. 결과 파일의 이름을 result_filename이라고 가정합니다.
-#     # Python 프로그램 실행 코드를 여기에 작성하세요.
+@app.route('/pdfminer/get_txt', methods=['POST'])
+def get_txt():
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    file.save(filename)
 
-#     return send_file(result_filename, as_attachment=True)
+    # PDF 파일에서 텍스트 추출
+    text = extract_text(filename)
+
+    # 추출된 텍스트를 txt 파일로 저장
+    result_filename = filename.replace('.pdf', '.txt')
+    with open(result_filename, 'w') as f:
+        f.write(text)
+
+    return send_file(result_filename, as_attachment=True)
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ from flask import Flask, request, send_file
 from flask_cors import CORS
 from pdfminer.high_level import extract_text
 import base64
-import filename
+import shlex
 
 app = Flask(__name__)
 CORS(app)
@@ -62,21 +62,17 @@ def get_doc():
 @app.route('/pdfminer/get_html', methods=['POST'])
 def get_html():
     file = request.files['file']
-    filename = file.filename
+    filename, file_extension = os.path.splitext(file.filename)  # 파일 이름과 확장자를 분리
+    encoded_filename = base64.b64encode(filename.encode()).decode() + file_extension  # 파일 이름을 base64로 인코딩하고 확장자를 다시 붙임
+    
     # 파일을 'data' 폴더에 저장
-    filepath = os.path.join(data_folder, filename)
+    filepath = os.path.join(data_folder, encoded_filename)
     file.save(filepath)
     result_filename = filepath.replace('.pdf', '.html')
+
     
     # pdf2htmlEX 명령의 인수로 파일의 이름을 넣어주면 html 파일로 변환
-    # 이스케이프 처리할 문자 패턴
-    escape_pattern = r'[^\w\d\s]'
-
-# 이스케이프 처리 함수
-    def escape_match(match):
-        char = match.group()
-        return '\\' + char
-    command = "./pdfToHtml.sh {}".format(re.sub(escape_pattern, escape_match, filepath))
+    command = "./pdfToHtml.sh {}".format(filepath)
     try:
         subprocess.run(command, check=True, shell=True)
     except subprocess.CalledProcessError as e:

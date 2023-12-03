@@ -20,21 +20,21 @@ def get_doc():
     return send_file(result_filename, as_attachment=True)
 
 
-# @app.route('/pdfminer/get_txt', methods=['POST'])
-# def get_txt():
-#     file = request.files['file']
-#     filename = file.filename
-#     file.save(filename)
+@app.route('/pdfminer/get_txt', methods=['POST'])
+def get_txt():
+    file = request.files['file']
+    filename = file.filename
+    file.save(filename)
 
-#     # PDF 파일에서 텍스트 추출
-#     text = extract_text(filename)
+    # PDF 파일에서 텍스트 추출
+    text = extract_text(filename)
 
-#     # 추출된 텍스트를 txt 파일로 저장
-#     result_filename = filename.replace('.pdf', '.txt')
-#     with open(result_filename, 'w') as f:
-#         f.write(text)
+    # 추출된 텍스트를 txt 파일로 저장
+    result_filename = filename.replace('.pdf', '.txt')
+    with open(result_filename, 'w') as f:
+        f.write(text)
 
-#     return send_file(result_filename, as_attachment=True)
+    return send_file(result_filename, as_attachment=True)
 
 # @app.route('/pdfminer/get_txt', methods=['POST'])
 # def get_html():
